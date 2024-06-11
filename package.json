@@ -1,0 +1,28 @@
+{
+  "name": "graphql-nodejs-example",
+  "version": "1.0.0",
+  "description": "Basic graphql example with nodejs",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@graphql-tools/merge": "^9.0.4",
+    "@graphql-tools/schema": "^10.0.4",
+    "apollo-server-express": "^3.13.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.17.1",
+    "graphql": "^16.8.1",
+    "graphql-http": "^1.22.1",
+    "mongoose": "^8.4.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/node": "^20.14.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
