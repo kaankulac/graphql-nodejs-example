@@ -14,9 +14,9 @@ const server = new ApolloServer({
 })
 
 // create express app
-const app = express();
+export const app = express();
 
-async function startServer() {
+export async function startServer() {
     await server.start();
     server.applyMiddleware({ app, path: '/graphql' });
 

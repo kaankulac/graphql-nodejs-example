@@ -24,6 +24,17 @@ const userType = gql`
         salary: Int!
     }
 
+    input EditUserInput {
+        firstName: String
+        lastName: String
+        age: Int
+        email: String
+        country: String
+        city: String
+        profession: String
+        salary: Int
+    }
+
     type Query {
         getUser(ID: ID!): User
         getUsers: [User]
@@ -36,6 +47,7 @@ const userType = gql`
 
     type Mutation {
         addUser(user: UserInput): User
+        editUser(ID: ID!, user: EditUserInput): User
     }
 `
 
