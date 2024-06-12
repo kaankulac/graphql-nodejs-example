@@ -5,16 +5,14 @@ import User from '../../src/models/user-model';
 describe('Grahql User', () => {
     describe('Query', () => {
         beforeAll(async () => {
-            await User.create([
-                {firstName: 'John', lastName: 'Doe', email: 'johndoe@example.com', age: 25, country: 'USA', city: 'New York', profession: 'Software Engineer', salary: 100000},
-                {firstName: 'Jane', lastName: 'Doe', email: 'janedoe@example.com', age: 30, country: 'USA', city: 'New York', profession: 'Software Engineer', salary: 120000},
-                {firstName: 'James', lastName: 'Doe', email: 'jamesdoe@example.com', age: 35, country: 'England', city: 'Manchester', profession: 'Software Engineer', salary: 140000},
-                {firstName: 'Jenny', lastName: 'Doe', email: 'jennydoe@example.com', age: 40, country: 'USA', city: 'New York', profession: 'Janitor', salary: 70000},
-            ])
-        })
-
-        afterAll(async () => {
             await User.deleteMany({});
+
+            await User.create([
+                { firstName: 'John', lastName: 'Doe', email: 'johndoe@example.com', age: 25, country: 'USA', city: 'New York', profession: 'Software Engineer', salary: 100000 },
+                { firstName: 'Jane', lastName: 'Doe', email: 'janedoe@example.com', age: 30, country: 'USA', city: 'New York', profession: 'Software Engineer', salary: 120000 },
+                { firstName: 'James', lastName: 'Doe', email: 'jamesdoe@example.com', age: 35, country: 'England', city: 'Manchester', profession: 'Software Engineer', salary: 140000 },
+                { firstName: 'Jenny', lastName: 'Doe', email: 'jennydoe@example.com', age: 40, country: 'USA', city: 'New York', profession: 'Janitor', salary: 70000 },
+            ])
         })
         test('Should fetch all users', async () => {
             const response = await request(app)
@@ -127,6 +125,59 @@ describe('Grahql User', () => {
     });
 
     describe('Mutation', () => {
+        test('Should add a new user', async () => {
+            const response = await request(app)
+                .post('/graphql')
+                .send({
+                    query: `
+                        mutation {
+                            addUser(user: {
+                                firstName: "Jack",
+                                lastName: "Doe",
+                                age: 45,
+                                email: "jackdoe@example.com",
+                                country: "USA",
+                                city: "New York",
+                                profession: "Janitor",
+                                salary: 80000
+                            }) {
+                                ID
+                                firstName
+                                age
+                            }
+                        }
+                    `
+                }).expect(200);
 
+            expect(response.body.data.addUser).toHaveProperty('ID');
+        })
+
+        test('Should edit a user', async () => {
+            const user = await User.findOne({ firstName: 'Jack' });
+            if (!user) throw new Error('User not found');
+            const response = await request(app)
+                .post('/graphql')
+                .send({
+                    query: `
+                mutation {
+                  editUser(ID: "${user._id?.toString()}", user: {
+                    firstName: "Jack",
+                    lastName: "Doe",
+                    age: 50,
+                    email: "jackdoe@example.com",
+                    country: "USA",
+                    city: "New York",
+                    profession: "Janitor",
+                    salary: 80000
+                  }) {
+                    ID
+                    firstName
+                    age
+                  }
+                }
+              `
+                }).expect(200);
+            expect(response.body.data.editUser).toHaveProperty('ID');
+        })
     })
 });
