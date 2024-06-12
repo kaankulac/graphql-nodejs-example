@@ -6,10 +6,10 @@ describe('Grahql User', () => {
     describe('Query', () => {
         beforeAll(async () => {
             await User.create([
-                {firstName: 'John', lastName: 'Doe', age: 25, country: 'USA', city: 'New York', profession: 'Software Engineer', salary: 100000},
-                {firstName: 'Jane', lastName: 'Doe', age: 30, country: 'USA', city: 'New York', profession: 'Software Engineer', salary: 120000},
-                {firstName: 'James', lastName: 'Doe', age: 35, country: 'England', city: 'Manchester', profession: 'Software Engineer', salary: 140000},
-                {firstName: 'Jenny', lastName: 'Doe', age: 40, country: 'USA', city: 'New York', profession: 'Janitor', salary: 70000},
+                {firstName: 'John', lastName: 'Doe', email: 'johndoe@example.com', age: 25, country: 'USA', city: 'New York', profession: 'Software Engineer', salary: 100000},
+                {firstName: 'Jane', lastName: 'Doe', email: 'janedoe@example.com', age: 30, country: 'USA', city: 'New York', profession: 'Software Engineer', salary: 120000},
+                {firstName: 'James', lastName: 'Doe', email: 'jamesdoe@example.com', age: 35, country: 'England', city: 'Manchester', profession: 'Software Engineer', salary: 140000},
+                {firstName: 'Jenny', lastName: 'Doe', email: 'jennydoe@example.com', age: 40, country: 'USA', city: 'New York', profession: 'Janitor', salary: 70000},
             ])
         })
 
@@ -24,8 +24,14 @@ describe('Grahql User', () => {
                         query {
                             getUsers {
                                 ID
-                                name
+                                firstName
+                                lastName
                                 age
+                                email
+                                country
+                                city
+                                profession
+                                salary
                             }
                         }
                     `
@@ -39,16 +45,16 @@ describe('Grahql User', () => {
                 .send({
                     query: `
                         query {
-                            getUsersByCountry(country: "england") {
+                            getUsersByCountry(country: "England") {
                                 ID
-                                name
+                                firstName
                                 age
                             }
                         }
                     `
                 })
                 .expect(200);
-            expect(response.body.data.getUsers).toHaveLength(1);
+            expect(response.body.data.getUsersByCountry).toHaveLength(1);
         })
         test('Should fetch users by city', async () => {
             const response = await request(app)
@@ -56,16 +62,16 @@ describe('Grahql User', () => {
                 .send({
                     query: `
                         query {
-                            getUsersByCity(city: "manchester") {
+                            getUsersByCity(city: "Manchester") {
                                 ID
-                                name
+                                firstName
                                 age
                             }
                         }
                     `
                 })
                 .expect(200);
-            expect(response.body.data.getUsers).toHaveLength(1);
+            expect(response.body.data.getUsersByCity).toHaveLength(1);
         })
         test('Should fetch users by profession', async () => {
             const response = await request(app)
@@ -75,14 +81,14 @@ describe('Grahql User', () => {
                         query {
                             getUsersByProfession(profession: "Software Engineer") {
                                 ID
-                                name
+                                firstName
                                 age
                             }
                         }
                     `
                 })
                 .expect(200);
-            expect(response.body.data.getUsers).toHaveLength(3);
+            expect(response.body.data.getUsersByProfession).toHaveLength(3);
         })
         test('Should fetch users by min salary', async () => {
             const response = await request(app)
@@ -92,14 +98,14 @@ describe('Grahql User', () => {
                         query {
                             getUsersByMinSalary(salary: 100000) {
                                 ID
-                                name
+                                firstName
                                 age
                             }
                         }
                     `
                 })
                 .expect(200);
-            expect(response.body.data.getUsers).toHaveLength(3);
+            expect(response.body.data.getUsersByMinSalary).toHaveLength(3);
         })
         test('Should fetch users by max salary', async () => {
             const response = await request(app)
@@ -109,14 +115,14 @@ describe('Grahql User', () => {
                         query {
                             getUsersByMaxSalary(salary: 100000) {
                                 ID
-                                name
+                                firstName
                                 age
                             }
                         }
                     `
                 })
                 .expect(200);
-            expect(response.body.data.getUsers).toHaveLength(2);
+            expect(response.body.data.getUsersByMaxSalary).toHaveLength(2);
         })
     });
 
